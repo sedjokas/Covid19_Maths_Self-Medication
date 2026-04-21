@@ -134,51 +134,38 @@ The paper analyses 10 scenarios using RK4 numerical integration:
 ```
 ./
 ├── README.md
+├── LICENSE
 ├── covid_simulation_white_bg.py       # Main SEIHM-R-D simulation (Scenarios 1–9)
 ├── backward_bifurcation_demo.py       # Backward bifurcation analysis (Scenarios 4 & 5)
 ├── export_gamma_panels.py             # Uganda calibration panels & γ sensitivity
-├── baseline_simulation_data.csv       # Time series – all 7 compartments, baseline run
-├── bistability_data.csv               # Bistability – 5 initial conditions (Scenario 5)
-├── endemic_comparison_data.csv        # Baseline vs. endemic equilibrium comparison
-├── summary_table.csv                  # R₀ and mortality summary across scenarios
 │
-│── Figures – Scenario 1 (Baseline)
-├── Plot_Covid1.png / Plot_Covid3.png / Plot_Covid5.png / Plot_Covid7.png
-├── IandD1.jpeg / IandD2.jpeg / IandD3.jpeg
-├── SimGen1_All.png / SimGen1_Infected.png / SimGen1_Deaths.png
-├── SimGen1_Living.png / SimGen1_PeakMH.png
+├── data/
+│   ├── baseline_simulation_data.csv   # Time series – all 7 compartments, baseline run
+│   ├── bistability_data.csv           # Bistability – 5 initial conditions (Scenario 5)
+│   ├── endemic_comparison_data.csv    # Baseline vs. endemic equilibrium comparison
+│   └── summary_table.csv             # R₀ and mortality summary across scenarios
 │
-│── Figures – Scenario 2 (γ sensitivity / self-medication)
-├── gamma1.png / gamma2.png / gamma3.png / gamma4.png
-├── all150_alpha025.png / inf150_alpha025.png
-│
-│── Figures – Scenario 3 (Transition to endemicity)
-├── S_endemic.png / I_endemic.png / H_endemic.png
-├── M_endemic.png / D_endemic.png / Peak_endemic.png
-│
-│── Figures – Scenarios 4 & 5 (Bifurcation & Bistability)
-├── forward1.png / backward1.png / forward_backward1.png
-├── Sbistab.png / Ebistab.png / Ebistab1.png / Ibistab.png
-├── HCbistab.png / Dbistab.png
-│
-│── Figures – Scenario 6 (Hospital capacity)
-├── capa1.png / Capa2.png / Capa3.png / Capa4.png
-│
-│── Figures – Scenario 7 (Mortality)
-├── Morts.png / MortH.png / PeakMH.png
-├── Death_policy.png / Death_policy2.png
-│
-│── Figures – Scenario 8 (Surveillance / EIM)
-├── EIMPlot01.png / EIMPlot03.png / EIMPlot06.png / EIMPlot09.png
-│
-│── Figures – Scenario 9 (Integrated policy)
-├── Inf_policy.png / CumulDeathsCI.png / Dealycase95CI.png
-│
-└── Figures – Scenario 10 (Phase-plane)
-    ├── scenario10_panel_a_SI.png / scenario10_panel_b_SM.png
-    ├── scenario10_panel_c_SH.png / scenario10_panel_d_IM.png
-    ├── scenario10_panel_e_IH.png / scenario10_panel_f_HM.png
-    └── Bassin.png
+└── figures/
+    ├── Scenario 1  – Plot_Covid1.png / Plot_Covid3.png / Plot_Covid5.png / Plot_Covid7.png
+    │                 IandD1.jpeg / IandD2.jpeg / IandD3.jpeg
+    │                 SimGen1_All.png / SimGen1_Infected.png / SimGen1_Deaths.png
+    │                 SimGen1_Living.png / SimGen1_PeakMH.png
+    ├── Scenario 2  – gamma1.png / gamma2.png / gamma3.png / gamma4.png
+    │                 all150_alpha025.png / inf150_alpha025.png
+    ├── Scenario 3  – S_endemic.png / I_endemic.png / H_endemic.png
+    │                 M_endemic.png / D_endemic.png / Peak_endemic.png
+    ├── Scenarios 4 & 5 – forward1.png / backward1.png / forward_backward1.png
+    │                     Sbistab.png / Ebistab.png / Ebistab1.png / Ibistab.png
+    │                     HCbistab.png / Dbistab.png
+    ├── Scenario 6  – capa1.png / Capa2.png / Capa3.png / Capa4.png
+    ├── Scenario 7  – Morts.png / MortH.png / PeakMH.png
+    │                 Death_policy.png / Death_policy2.png
+    ├── Scenario 8  – EIMPlot01.png / EIMPlot03.png / EIMPlot06.png / EIMPlot09.png
+    ├── Scenario 9  – Inf_policy.png / CumulDeathsCI.png / Dealycase95CI.png
+    └── Scenario 10 – scenario10_panel_a_SI.png / scenario10_panel_b_SM.png
+                      scenario10_panel_c_SH.png / scenario10_panel_d_IM.png
+                      scenario10_panel_e_IH.png / scenario10_panel_f_HM.png
+                      Bassin.png
 ```
 
 ---
