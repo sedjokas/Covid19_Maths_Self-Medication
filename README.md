@@ -1,25 +1,28 @@
-# Understanding COVID-19 Spread in Low-Income Countries
-## A SEIHM-R-D Modeling Approach Including Hospitalized and Home-Care Populations
+# Modeling COVID-19 Spread in Low-Income Countries
+
+## A SEIHM-R-D Framework with Bidirectional Hospital and Home-Care Transitions
 
 **Authors:** Selain K. Kasereka · Ruffin-Benoît M. Ngoie · Emile Franc G. Doungmo · Eric M. Mafuta · Jean Chamberlain Chedjou · Emmanuel M. Kabengele · Kyandoghere Kyamakya
 
 **Affiliations:** University of Klagenfurt (Austria) · ABIL-LAB Kinshasa (DRC) · Institut Supérieur Pédagogique de Mbanza-Ngungu (DRC) · University of South Africa · University of Kinshasa · University of Geneva
 
-**Journal:** Journal of Infection and Public Health (Elsevier)
+**Target journal:** Infectious Disease Modelling (KeAi / Elsevier)
 
-**Status:** Preprint submitted — April 2026 · DOI: not yet assigned
+**Status:** Manuscript prepared for submission. DOI: not yet assigned.
 
 ---
 
 ## Abstract
 
-In low-income countries, many COVID-19 patients avoided hospitalisation due to financial constraints and limited hospital capacity, opting for home-care instead. Standard epidemic models rarely capture this behaviour, leading to systematic underestimation of transmission. This work develops a **SEIHM-R-D** model explicitly distinguishing hospitalised (*H*) from home-care (*M*) patients, with differential infectiousness and bidirectional transitions between care settings.
+Most COVID-19 transmission models leave out people who manage illness at home rather than in a hospital. This pattern was common in low-income countries, driven by financial barriers, limited hospital capacity, and local care-seeking habits. We build a SEIHM-R-D compartmental model that separates hospitalized (H) from home-care (M) patients. Patients can move in both directions between the two care settings, and each setting carries its own level of infectiousness.
 
-Key results:
-- Mathematical analysis establishes **backward bifurcation**: reducing R₀ below 1 may be insufficient for elimination when hospital recovery is poor
-- Model calibrated on Uganda's COVID-19 Delta-wave data (June–October 2021): **R₀ = 2.23**, MAPE < 0.1%, with **95% of infections remaining undetected** and a 27.7:1 peak home-care-to-hospital ratio
-- External validation on Mozambique, Senegal, and Cameroon: mean **R² = 0.963** with 82% of parameters fixed from Uganda calibration
-- Community surveillance reduces R₀ by **70.4%** and prevents **33% of deaths**; integrated policies yield **22.9% mortality reduction**
+We establish the equilibria and the local and global stability of the six-dimensional living subsystem (S, E, I, H, M, R), with cumulative deaths D treated as a monotone output rather than as an equilibrium coordinate. We derive the basic reproduction number R₀ via the next-generation-matrix method, and establish the direction of bifurcation at R₀ = 1 analytically (center-manifold method) and numerically. The model is calibrated to Uganda's COVID-19 Delta-wave surveillance data (June–October 2021), and a subset of its parameters is transferred to Mozambique, Senegal, and Cameroon.
+
+**Key results:**
+- We prove the center-manifold coefficient is **strictly negative for every admissible parameter combination**: the model undergoes **only forward (transcritical) bifurcation** at R₀ = 1. **R₀ < 1 is both necessary and sufficient for elimination — there is no bistability regime.** (An earlier draft of this analysis suggested backward bifurcation was possible; a corrected, fully denominator-consistent center-manifold calculation shows this was not the case — see [Note on the corrected bifurcation result](#note-on-the-corrected-bifurcation-result) below.)
+- Calibration to Uganda: **R₀ = 2.23**, daily-case RMSE of 272 cases/day, close agreement with the observed 1,448 cumulative deaths. Under an assumed 5% case-ascertainment fraction, roughly **95% of infections went uncaptured** by surveillance, with a peak home-care-to-hospital occupancy ratio of **27.7:1**.
+- A three-parameter cross-country transfer (holding 14 of 17 Uganda-fitted parameters fixed) reproduces cumulative-mortality curves in Mozambique (R² = 0.964, MAPE 4.5%), Senegal (R² = 0.958, MAPE 3.8%), and Cameroon (R² = 0.966, MAPE 3.5%) — mean R² = 0.963.
+- Community-surveillance and integrated-policy scenarios reduce simulated R₀ by up to **70.4%** and simulated mortality by up to **22.9%**.
 
 ---
 
@@ -31,27 +34,27 @@ Key results:
 |--------|-------------|
 | **S** | Susceptible |
 | **E** | Exposed (latent period) |
-| **I** | Infectious (unmanaged, community) |
-| **H** | Hospitalised |
+| **I** | Infectious (not yet in a care pathway) |
+| **H** | Hospitalized |
 | **M** | Home-care / self-medication |
 | **R** | Recovered |
-| **D** | Cumulative deaths |
+| **D** | Cumulative deaths (monotone output, not an equilibrium coordinate) |
 
-The living population is N_L = S + E + I + H + M + R; D is tracked separately.
+The living population is N_L = S + E + I + H + M + R; D is tracked separately as a derived, non-decreasing output that has no influence on, and is not influenced by, the living subsystem.
 
 ### Force of Infection
 
-$$\lambda = \frac{\alpha \, S \, (I + \eta_M M + \xi_H H)}{N_L}$$
+$$\lambda = \frac{\alpha \, (I + \eta_M M + \xi_H H)}{N_L}$$
 
-where η_M ∈ [0.50, 0.80] is the relative infectiousness of home-care patients and ξ_H ∈ [0.05, 0.20] for hospitalised patients — reflecting reduced but non-zero infection control in household settings.
+where η_M ∈ [0.50, 0.80] is the relative infectiousness of home-care patients and ξ_H ∈ [0.05, 0.20] for hospitalized patients, reflecting reduced but non-zero infection control in each setting. λ multiplies S separately in the S and E equations below.
 
 ### Basic Reproduction Number R₀
 
-Derived via the next-generation matrix method (Eq. 14):
+Derived via the next-generation-matrix method:
 
 $$\mathcal{R}_0 = \frac{\alpha\beta\,[\mathcal{D} + \kappa\xi_H P_H + \kappa\eta_M P_M]}{(\mu_1+\beta)(\mu_1+\mu_2+\kappa)(\omega_1\omega_2 - \theta_1\theta_2)}$$
 
-where P_H = γω₂ + (1−γ)θ₂ and P_M = γθ₁ + (1−γ)ω₁ capture transmission pathways through hospitalised and home-care patients respectively.
+where P_H = γω₂ + (1−γ)θ₂ and P_M = γθ₁ + (1−γ)ω₁ capture transmission pathways through hospitalized and home-care patients respectively, and ω₁, ω₂ are the total exit rates from H and M (Λ, μ₁, ε₁, φ₁, π₁, θ₁ and the M-analogues).
 
 ### Baseline Parameters (Table 2 of the manuscript)
 
@@ -60,72 +63,98 @@ where P_H = γω₂ + (1−γ)θ₂ and P_M = γθ₁ + (1−γ)ω₁ capture tr
 | Λ | Recruitment rate | 0.304 |
 | α | Contact rate | 0.035 |
 | β | Progression rate E→I | 0.095 |
-| γ | Proportion of infected hospitalised | 0.29 |
+| γ | Proportion of infected hospitalized | 0.29 |
 | κ | Progression rate I→care states | 0.100 |
 | θ₁ | Hospital-to-home discharge rate | 0.396 |
 | θ₂ | Home-to-hospital transfer rate | 0.0396 |
 | π₁ / π₂ | COVID-19 mortality (H / M) | 0.0196 / 0.009 |
 | φ₁ / φ₂ | Recovery rate (H / M) | 0.900 / 6.25×10⁻⁵ |
 | μ₁ / μ₂ | Natural / disease-induced mortality | 0.00576 / 0.196 |
-| η_M | Relative infectiousness of home-care | [0.50, 0.80] |
-| ξ_H | Relative infectiousness of hospitalised | [0.05, 0.20] |
+| ε₁ / ε₂ | Return-to-susceptible rate (H / M) | 0.001 / 0.001 |
+| η_M | Relative infectiousness of home-care | [0.50, 0.80] (baseline 0.50) |
+| ξ_H | Relative infectiousness of hospitalized | [0.05, 0.20] (baseline 0.10) |
+
+Under this baseline, R₀ = 0.2102.
 
 ---
 
 ## Mathematical Analysis
 
-### Backward Bifurcation (Theorem 3.1)
+### No Backward Bifurcation (Proposition, Section 3 of the manuscript)
 
-The model undergoes **backward (subcritical) bifurcation** at R₀ = 1 when the hospital recovery rate φ₁ falls below a critical threshold. In this regime, two endemic equilibria coexist for R̃₀ < R₀ < 1, while the disease-free equilibrium remains locally stable — **bistability**. Consequently, reducing R₀ below 1 is necessary but not sufficient for disease elimination; the actual threshold is R̃₀ < 1.
+Some compartmental models that couple hospital-based and home-based care exhibit backward bifurcation at R₀ = 1, typically driven by direct return-to-susceptibility flows from an active care state (here, the ε₁, ε₂ pathways). We checked whether this model does, using a center-manifold calculation that fully accounts for the state-dependence of the total-population denominator N_L in the frequency-dependent force of infection — a term that is easy to drop (freezing N_L at its disease-free value) without affecting the first-order Jacobian, but which removes curvature terms that are always present and always stabilizing.
 
-The bifurcation condition depends on α̃:
-- If α < α̃ → **backward bifurcation** (bistability, initial conditions determine outcome)
-- If α ≥ α̃ → **forward bifurcation** (classical threshold behaviour)
+The resulting quadratic center-manifold coefficient **a** factors as the product of two strictly positive quantities for every admissible (non-negative) parameter combination, so **a is strictly negative unconditionally** — independent of ε₁, ε₂, φ₁, φ₂, θ₁, θ₂. This means:
 
-This is a critical policy implication: in settings with poor hospital recovery, large outbreaks can persist even when R₀ < 1.
+- The model undergoes **only forward (transcritical) bifurcation** at R₀ = 1.
+- **R₀ < 1 is both necessary and sufficient for elimination.** There is no bistability window and no dependence on initial outbreak size.
+
+This was verified three independent ways: (i) a closed-form, parameter-free sign argument; (ii) direct symbolic differentiation with no simplifying assumptions; (iii) numerical eigendecomposition of the Jacobian across a sweep of φ₁ ∈ [0.02, 0.95] and ε₁ = ε₂ ∈ {0, 0.001, 0.02, 0.10, 0.30}. It was additionally confirmed by direct (non-linearized) integration of the full nonlinear system from five initial conditions, from a tiny seed to a very large initial outbreak, at R₀ ≈ 0.988 — all five converge to the disease-free equilibrium. See `bifurcation_verification.py`.
+
+**A numerical caveat that matters for interpreting simulations near R₀ ≈ 1:** the relaxation eigenvalue near the bifurcation point is extremely small (≈ −2.7×10⁻⁴ / day here, a ~3,700-day relaxation time). Simulations truncated at a few hundred days can show trajectories that have simply not yet reached their unique common equilibrium, which is easy to mistake for convergence to two distinct equilibria. See the note below.
 
 ### Global Stability
 
-- **Theorem 3.3** (GAS of DFE): If R₀ ≤ 1 under the forward-bifurcation condition, the disease-free equilibrium is globally asymptotically stable (Lyapunov function, LaSalle's principle).
-- **Theorem 3.4** (GAS of endemic equilibrium): If R₀ > 1, the endemic equilibrium E* is globally asymptotically stable in Ω \ {E₀} (Volterra–Goh function).
+- **Theorem (GAS of the DFE):** If R₀ ≤ 1, the disease-free equilibrium is globally asymptotically stable in Ω (Lyapunov function + LaSalle's invariance principle).
+- **Theorem (GAS of the endemic equilibrium):** If R₀ > 1, a unique endemic equilibrium exists and is globally asymptotically stable in Ω \ {X₀} (Volterra–Goh-type Lyapunov function).
+
+Both are proved on the six-dimensional living subsystem (S, E, I, H, M, R); D is excluded from the equilibrium notion and reported only as a derived, path-dependent output.
+
+---
+
+## Note on the Corrected Bifurcation Result
+
+An earlier stage of this project explored whether the model could exhibit backward bifurcation and bistability, and an earlier version of this repository (`backward_bifurcation_demo.py`, now removed) and its accompanying `data/bistability_data.csv` reflected that hypothesis. On revisiting the center-manifold derivation with full account of the state-dependence of N_L, that conclusion did not hold up: the corrected coefficient a is strictly negative everywhere, so the model only bifurcates forward.
+
+In hindsight, the old `bistability_data.csv` — integrated for only 300 days — is a plausible illustration of exactly the pitfall described above: at R₀ close to 1, trajectories from different initial conditions can still look clearly separated at day 300 (final cumulative deaths ranging from 0.5 to 351 across the five runs in that file) simply because they have not yet relaxed to the shared equilibrium, not because they are heading to different equilibria. `bifurcation_verification.py` reruns the same kind of five-initial-condition experiment out to 60,000 days and confirms all five converge to the same disease-free state (final spread in S: 0.000000). Cumulative deaths D do converge to different *finite* values across the five runs — that is expected and consistent with the model, since D is a path-dependent integral of the outbreak, not an equilibrium coordinate; it is the six-dimensional living subsystem (S, E, I, H, M, R) that converges to a single, shared attractor.
+
+We are keeping this note in the repository, rather than quietly deleting the old files, so the history of the analysis stays traceable.
 
 ---
 
 ## Simulation Scenarios
 
-The paper analyses 10 scenarios using RK4 numerical integration:
+The paper analyzes 10 scenarios using 4th-order Runge–Kutta numerical integration:
 
 | # | Scenario | Key variable | Main finding |
 |---|----------|-------------|-------------|
-| 1 | **Baseline epidemic dynamics** | All compartments | 27.7:1 home-care/hospital ratio at peak |
-| 2 | **Impact of self-medication** | γ (hospitalisation rate) | Higher γ → lower transmission and mortality |
-| 3 | **R₀ < 1 to R₀ > 1 transition** | α (contact rate) | Loss of epidemic control and endemicity |
-| 4 | **Hospital recovery bifurcation** | φ₁ (hospital recovery) | φ₁ governs forward vs. backward bifurcation |
-| 5 | **Backward bifurcation & bistability** | Initial conditions | Identical R₀, deaths ranging 0.5–351.2 per 1,000 |
-| 6 | **Hospital capacity constraints** | θ₁ (early discharge) | Overcrowding forces patients home, raises mortality |
-| 7 | **Epidemic mortality dynamics** | π₁, π₂, η_M | Home-care dominates transmission and deaths |
-| 8 | **Community surveillance** | η_M, θ₂ | R₀ reduced by 70.4%; 33% fewer deaths |
-| 9 | **Integrated policy packages** | Combined parameters | 22.9% mortality reduction vs. status quo |
-| 10 | **Phase-plane bifurcation** | All 7 state variables | Hysteresis and basin of attraction in bistability region |
+| 1 | Baseline dynamics | All compartments | 18:1 home-care/hospital ratio at peak; R₀ = 0.2102 |
+| 2 | Care-seeking behavior | γ (hospitalization proportion) | Mortality ranked High Trust < Moderate < Self-medication |
+| 3 | Contact-rate sweep | α | Raising α 7.1-fold crosses R₀ = 1; mortality rises 26.9-fold |
+| 4 | Bifurcation verification | φ₁ ∈ [0.02, 0.95] | Coefficient a stays strictly negative throughout |
+| 5 | No-bistability demonstration | 5 initial conditions, 60,000-day horizon | All trajectories converge to the same disease-free equilibrium |
+| 6 | Hospital discharge policy | θ₁ (early discharge under capacity pressure) | Aggressive discharge raises mortality ~7.3% |
+| 7 | Joint sensitivity of mortality | γ, η_M | Mortality contour spans ~3.8–5.0 deaths/1,000 |
+| 8 | Community surveillance | η_M, θ₂ | Intensive vs. none: R₀ falls 70.4%, deaths fall 33.3% |
+| 9 | Integrated policy comparison | γ, η_M, θ₂ combined | Integrated approach: 22.9% mortality reduction |
+| 10 | Convergence to the endemic equilibrium | Phase-plane, R₀ > 1 | Unique endemic attractor from all tested initial conditions |
 
 ---
 
 ## Calibration and Validation
 
-### Uganda Calibration (June–October 2021)
+### Uganda Calibration (Delta wave, June–October 2021)
 - Population: 47,123,531
 - Calibrated R₀ = **2.23**
-- Cumulative deaths reproduced: observed 1,448 — **MAPE < 0.1%**
-- RMSE = 272 cases/day on daily incidence
-- **95% of infections remained undetected** (reporting rate ρ = 5%)
-- Peak home-care-to-hospital ratio: **27.7:1**
+- Cumulative deaths reproduced: observed 1,448 (by construction of the fitted mortality-scaling factor δ ≈ 1.30)
+- RMSE = 272 cases/day on daily incidence (in-sample)
+- Under an assumed, literature-informed (not independently estimated) 5% case-ascertainment fraction: **95% of infections implied undetected**
+- Peak home-care-to-hospital occupancy ratio: **27.7:1**
 
-### External Validation
-| Country | R² | Parameters fixed from Uganda |
-|---------|----|------------------------------|
-| Mozambique | ~0.963 (mean) | 82% (14 of 17) |
-| Senegal | ~0.963 (mean) | 82% (14 of 17) |
-| Cameroon | ~0.963 (mean) | 82% (14 of 17) |
+These case-ascertainment and occupancy-ratio figures are model-implied quantities conditional on the assumed ρ = 0.05, not independently measured facts — see the manuscript's Limitations section.
+
+### Cross-Country Parameter Transfer
+
+Three of seventeen parameters (α, β, κ) are re-fitted per country; the remaining fourteen are held at their Uganda-fitted values.
+
+| Country | Window | R² | MAPE |
+|---------|--------|----|------|
+| Mozambique | Jul–Nov 2020 | 0.9639 | 4.5% |
+| Senegal | Jul–Oct 2020 | 0.9582 | 3.8% |
+| Cameroon | Jun–Sep 2020 | 0.9660 | 3.5% |
+| **Mean** | | **0.963** | |
+
+This is reported as evidence against gross incompatibility of the fitted disease-progression parameters across settings — a necessary but not sufficient condition for transferability — not as independent external validation. See the manuscript's Limitations section for the full discussion.
 
 ---
 
@@ -135,37 +164,22 @@ The paper analyses 10 scenarios using RK4 numerical integration:
 ./
 ├── README.md
 ├── LICENSE
-├── covid_simulation_white_bg.py       # Main SEIHM-R-D simulation (Scenarios 1–9)
-├── backward_bifurcation_demo.py       # Backward bifurcation analysis (Scenarios 4 & 5)
-├── export_gamma_panels.py             # Uganda calibration panels & γ sensitivity
+├── covid_simulation_white_bg.py       # Main SEIHM-R-D simulation (Scenarios 1-3, 6-9)
+├── bifurcation_verification.py        # Bifurcation verification (Scenarios 4 & 5): center-manifold
+│                                       #   coefficient sweep + long-horizon no-bistability demo
+├── export_gamma_panels.py             # Uganda calibration panels & gamma sensitivity
 │
 ├── data/
-│   ├── baseline_simulation_data.csv   # Time series – all 7 compartments, baseline run
-│   ├── bistability_data.csv           # Bistability – 5 initial conditions (Scenario 5)
-│   ├── endemic_comparison_data.csv    # Baseline vs. endemic equilibrium comparison
-│   └── summary_table.csv             # R₀ and mortality summary across scenarios
+│   ├── baseline_simulation_data.csv       # Time series - all 7 compartments, baseline run
+│   ├── endemic_comparison_data.csv        # Baseline vs. endemic equilibrium comparison
+│   ├── summary_table.csv                  # R0 and mortality summary across scenarios
+│   ├── bifurcation_coefficient_a.csv      # Coefficient a across the (phi_1, epsilon) sweep
+│   └── no_bistability_trajectories.csv    # 5 initial conditions x 60,000-day integration
 │
 └── figures/
-    ├── Scenario 1  – Plot_Covid1.png / Plot_Covid3.png / Plot_Covid5.png / Plot_Covid7.png
-    │                 IandD1.jpeg / IandD2.jpeg / IandD3.jpeg
-    │                 SimGen1_All.png / SimGen1_Infected.png / SimGen1_Deaths.png
-    │                 SimGen1_Living.png / SimGen1_PeakMH.png
-    ├── Scenario 2  – gamma1.png / gamma2.png / gamma3.png / gamma4.png
-    │                 all150_alpha025.png / inf150_alpha025.png
-    ├── Scenario 3  – S_endemic.png / I_endemic.png / H_endemic.png
-    │                 M_endemic.png / D_endemic.png / Peak_endemic.png
-    ├── Scenarios 4 & 5 – forward1.png / backward1.png / forward_backward1.png
-    │                     Sbistab.png / Ebistab.png / Ebistab1.png / Ibistab.png
-    │                     HCbistab.png / Dbistab.png
-    ├── Scenario 6  – capa1.png / Capa2.png / Capa3.png / Capa4.png
-    ├── Scenario 7  – Morts.png / MortH.png / PeakMH.png
-    │                 Death_policy.png / Death_policy2.png
-    ├── Scenario 8  – EIMPlot01.png / EIMPlot03.png / EIMPlot06.png / EIMPlot09.png
-    ├── Scenario 9  – Inf_policy.png / CumulDeathsCI.png / Dealycase95CI.png
-    └── Scenario 10 – scenario10_panel_a_SI.png / scenario10_panel_b_SM.png
-                      scenario10_panel_c_SH.png / scenario10_panel_d_IM.png
-                      scenario10_panel_e_IH.png / scenario10_panel_f_HM.png
-                      Bassin.png
+    ├── fig_corrected_coeff_a.png      # Scenario 4: coefficient a is negative throughout
+    ├── fig_no_bistability.png         # Scenario 5: convergence to a common DFE
+    └── ... (per-scenario figures, see filenames)
 ```
 
 ---
@@ -176,38 +190,40 @@ The paper analyses 10 scenarios using RK4 numerical integration:
 pip install numpy scipy matplotlib pandas
 ```
 
-Python ≥ 3.8. Simulations use the classical 4th-order Runge-Kutta method (via `scipy.integrate.odeint`).
+Python ≥ 3.8. Simulations use `scipy.integrate.odeint` (an adaptive-step LSODA-based solver); the manuscript itself reports results from a fixed-step 4th-order Runge–Kutta integration with step-size convergence checked by halving h.
 
 ## Usage
 
 ```bash
-# Main simulation — all 9 policy scenarios
+# Main simulation - policy scenarios (1-3, 6-9)
 python covid_simulation_white_bg.py
 
-# Backward bifurcation analysis — forward vs. backward comparison
-python backward_bifurcation_demo.py
+# Bifurcation verification - coefficient-a sweep and long-horizon no-bistability demo (4 & 5)
+python bifurcation_verification.py
 
-# Uganda calibration panels (γ sensitivity, validation figures)
+# Uganda calibration panels (gamma sensitivity, validation figures)
 python export_gamma_panels.py
 ```
 
-Each script generates publication-ready figures at 300 DPI (white background, dark color palette).
+Each script generates publication-ready figures at 300 DPI (white background).
 
 ---
 
 ## Key Policy Implications
 
-1. **R₀ < 1 is not sufficient for elimination** when hospital recovery is poor — backward bifurcation creates a bistability zone where large outbreaks persist even with R₀ < 1.
-2. **The home-care compartment is the dominant transmission driver** — near-zero home-care recovery (φ₂ ≈ 6.25×10⁻⁵) creates a persistent endemic reservoir.
-3. **Community surveillance** (reducing η_M and increasing θ₂) is the most effective single intervention, reducing R₀ by 70.4%.
-4. **Integrated policies** (surveillance + awareness + capacity) yield the greatest mortality reduction (22.9%).
-5. **Parameter transferability** across Sub-Saharan Africa (R² = 0.963 with 82% parameters fixed) confirms the model's applicability for regional public health planning.
+1. **R₀ < 1 is both necessary and sufficient for elimination in this model.** There is no bistable "trap" to avoid: driving R₀ below 1, by whatever mix of care-seeking, infection-control, or surveillance measures is feasible, suffices.
+2. **The home-care compartment is the dominant transmission driver** under baseline and Uganda-calibrated parameters alike, both because more infections are routed there and because it clears more slowly.
+3. **Community surveillance** (reducing η_M, increasing θ₂) is the most effective single intervention tested, reducing simulated R₀ by up to 70.4%.
+4. **Integrated policies** (surveillance + awareness) yield the largest simulated mortality reduction (22.9%) among the scenarios tested.
+5. **Parameter transferability** across Sub-Saharan Africa (mean R² = 0.963 with 14 of 17 parameters fixed from Uganda) is consistent with, though does not prove, shared disease-progression structure across the four countries studied.
+
+All of the above are scenario-conditional, assumption-driven projections from a model that has not yet been benchmarked against simpler baseline models or validated on temporally held-out data — see the manuscript's Limitations section (Section 6) before treating any specific percentage as a validated causal intervention effect.
 
 ---
 
 ## Citation
 
-> Kasereka S.K., Ngoie R.-B.M., Doungmo E.F.G., Mafuta E.M., Chedjou J.C., Kabengele E.M., Kyamakya K. (2026). *Understanding COVID-19 Spread in Low-Income Countries: A Modeling Approach Including Hospitalized and Home-Care Populations.* Preprint submitted to Elsevier.
+> Kasereka S.K., Ngoie R.-B.M., Doungmo E.F.G., Mafuta E.M., Chedjou J.C., Kabengele E.M., Kyamakya K. Modeling COVID-19 Spread in Low-Income Countries: A SEIHM-R-D Framework with Bidirectional Hospital and Home-Care Transitions. Prepared for submission to *Infectious Disease Modelling*.
 
 **Corresponding author:** Selain K. Kasereka — selain.kasereka@aau.at
 
