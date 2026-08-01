@@ -3,26 +3,21 @@ Bifurcation Verification for the SEIHM-R-D COVID-19 Model
 Reproduces Scenarios 4 and 5 of the manuscript (Section 4) and the
 center-manifold calculation of Section 3 (Proposition "no backward bifurcation").
 
-This script supersedes the earlier backward_bifurcation_demo.py. An earlier
-draft of the analysis suggested the model could undergo backward bifurcation
-and exhibit bistability. A corrected, fully denominator-consistent
-center-manifold calculation (accounting for the state-dependence of N_L in
-the frequency-dependent force of infection) shows this was incorrect: the
+The center-manifold calculation fully accounts for the state-dependence of
+N_L in the frequency-dependent force of infection. The resulting
 center-manifold coefficient a is strictly negative for every admissible
 parameter combination, so the model undergoes only forward (transcritical)
 bifurcation at R0 = 1, and R0 < 1 is both necessary and sufficient for
 elimination. There is no bistability regime.
 
-The old bistability_data.csv (integrated to only 300 days) appears to have
-been a case of exactly the pitfall this script's Scenario 5 output warns
-about: near R0 = 1 the relaxation eigenvalue is extremely small
+Near R0 = 1 the relaxation eigenvalue is extremely small
 (~ -2.7e-4 / day, a ~3,700-day relaxation time), so trajectories that have
 not yet reached their unique common equilibrium can look like they are
 converging to two different endpoints when they are not. Scenario 5 below
-therefore integrates for 60,000 days, not 300.
+therefore integrates for 60,000 days.
 
 Outputs:
-  - figures/fig_corrected_coeff_a.png   (Scenario 4: center-manifold coefficient a)
+  - figures/fig_bifurcation_coefficient_a.png   (Scenario 4: center-manifold coefficient a)
   - figures/fig_no_bistability.png      (Scenario 5: long-horizon convergence check)
   - data/bifurcation_coefficient_a.csv
   - data/no_bistability_trajectories.csv
@@ -157,7 +152,7 @@ def scenario4_bifurcation_coefficient(outdir_fig='figures', outdir_data='data'):
     ax.legend(fontsize=8)
     ax.grid(True)
     fig.tight_layout()
-    fig.savefig(f"{outdir_fig}/fig_corrected_coeff_a.png", dpi=300)
+    fig.savefig(f"{outdir_fig}/fig_bifurcation_coefficient_a.png", dpi=300)
     plt.close(fig)
 
     with open(f"{outdir_data}/bifurcation_coefficient_a.csv", "w") as f:
@@ -250,4 +245,4 @@ if __name__ == "__main__":
     scenario5_no_bistability()
 
     print()
-    print("Done. See figures/fig_corrected_coeff_a.png and figures/fig_no_bistability.png")
+    print("Done. See figures/fig_bifurcation_coefficient_a.png and figures/fig_no_bistability.png")

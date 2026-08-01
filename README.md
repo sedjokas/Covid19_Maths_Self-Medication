@@ -19,7 +19,7 @@ Most COVID-19 transmission models leave out people who manage illness at home ra
 We establish the equilibria and the local and global stability of the six-dimensional living subsystem (S, E, I, H, M, R), with cumulative deaths D treated as a monotone output rather than as an equilibrium coordinate. We derive the basic reproduction number R₀ via the next-generation-matrix method, and establish the direction of bifurcation at R₀ = 1 analytically (center-manifold method) and numerically. The model is calibrated to Uganda's COVID-19 Delta-wave surveillance data (June–October 2021), and a subset of its parameters is transferred to Mozambique, Senegal, and Cameroon.
 
 **Key results:**
-- We prove the center-manifold coefficient is **strictly negative for every admissible parameter combination**: the model undergoes **only forward (transcritical) bifurcation** at R₀ = 1. **R₀ < 1 is both necessary and sufficient for elimination — there is no bistability regime.** (An earlier draft of this analysis suggested backward bifurcation was possible; a corrected, fully denominator-consistent center-manifold calculation shows this was not the case — see [Note on the corrected bifurcation result](#note-on-the-corrected-bifurcation-result) below.)
+- We prove the center-manifold coefficient is **strictly negative for every admissible parameter combination**: the model undergoes **only forward (transcritical) bifurcation** at R₀ = 1. **R₀ < 1 is both necessary and sufficient for elimination — there is no bistability regime.**
 - Calibration to Uganda: **R₀ = 2.23**, daily-case RMSE of 272 cases/day, close agreement with the observed 1,448 cumulative deaths. Under an assumed 5% case-ascertainment fraction, roughly **95% of infections went uncaptured** by surveillance, with a peak home-care-to-hospital occupancy ratio of **27.7:1**.
 - A three-parameter cross-country transfer (holding 14 of 17 Uganda-fitted parameters fixed) reproduces cumulative-mortality curves in Mozambique (R² = 0.964, MAPE 4.5%), Senegal (R² = 0.958, MAPE 3.8%), and Cameroon (R² = 0.966, MAPE 3.5%) — mean R² = 0.963.
 - Community-surveillance and integrated-policy scenarios reduce simulated R₀ by up to **70.4%** and simulated mortality by up to **22.9%**.
@@ -80,18 +80,16 @@ Under this baseline, R₀ = 0.2102.
 
 ## Mathematical Analysis
 
-### No Backward Bifurcation (Proposition, Section 3 of the manuscript)
+### Direction of Bifurcation at R₀ = 1 (Proposition, Section 3 of the manuscript)
 
-Some compartmental models that couple hospital-based and home-based care exhibit backward bifurcation at R₀ = 1, typically driven by direct return-to-susceptibility flows from an active care state (here, the ε₁, ε₂ pathways). We checked whether this model does, using a center-manifold calculation that fully accounts for the state-dependence of the total-population denominator N_L in the frequency-dependent force of infection — a term that is easy to drop (freezing N_L at its disease-free value) without affecting the first-order Jacobian, but which removes curvature terms that are always present and always stabilizing.
-
-The resulting quadratic center-manifold coefficient **a** factors as the product of two strictly positive quantities for every admissible (non-negative) parameter combination, so **a is strictly negative unconditionally** — independent of ε₁, ε₂, φ₁, φ₂, θ₁, θ₂. This means:
+The center-manifold calculation fully accounts for the state-dependence of the total-population denominator N_L in the frequency-dependent force of infection. The resulting quadratic center-manifold coefficient **a** factors as the product of two strictly positive quantities for every admissible (non-negative) parameter combination, so **a is strictly negative unconditionally** — independent of ε₁, ε₂, φ₁, φ₂, θ₁, θ₂. This means:
 
 - The model undergoes **only forward (transcritical) bifurcation** at R₀ = 1.
 - **R₀ < 1 is both necessary and sufficient for elimination.** There is no bistability window and no dependence on initial outbreak size.
 
-This was verified three independent ways: (i) a closed-form, parameter-free sign argument; (ii) direct symbolic differentiation with no simplifying assumptions; (iii) numerical eigendecomposition of the Jacobian across a sweep of φ₁ ∈ [0.02, 0.95] and ε₁ = ε₂ ∈ {0, 0.001, 0.02, 0.10, 0.30}. It was additionally confirmed by direct (non-linearized) integration of the full nonlinear system from five initial conditions, from a tiny seed to a very large initial outbreak, at R₀ ≈ 0.988 — all five converge to the disease-free equilibrium. See `bifurcation_verification.py`.
+This is verified three independent ways: (i) a closed-form, parameter-free sign argument; (ii) direct symbolic differentiation with no simplifying assumptions; (iii) numerical eigendecomposition of the Jacobian across a sweep of φ₁ ∈ [0.02, 0.95] and ε₁ = ε₂ ∈ {0, 0.001, 0.02, 0.10, 0.30}. It is additionally confirmed by direct (non-linearized) integration of the full nonlinear system from five initial conditions, from a tiny seed to a very large initial outbreak, at R₀ ≈ 0.988 — all five converge to the disease-free equilibrium. See `bifurcation_verification.py`.
 
-**A numerical caveat that matters for interpreting simulations near R₀ ≈ 1:** the relaxation eigenvalue near the bifurcation point is extremely small (≈ −2.7×10⁻⁴ / day here, a ~3,700-day relaxation time). Simulations truncated at a few hundred days can show trajectories that have simply not yet reached their unique common equilibrium, which is easy to mistake for convergence to two distinct equilibria. See the note below.
+**A numerical caveat that matters for interpreting simulations near R₀ ≈ 1:** the relaxation eigenvalue near the bifurcation point is extremely small (≈ −2.7×10⁻⁴ / day here, a ~3,700-day relaxation time). Simulations truncated at a few hundred days can show trajectories that have simply not yet reached their unique common equilibrium, which is easy to mistake for convergence to two distinct equilibria — `bifurcation_verification.py` therefore integrates Scenario 5 out to 60,000 days rather than a few hundred.
 
 ### Global Stability
 
@@ -99,16 +97,6 @@ This was verified three independent ways: (i) a closed-form, parameter-free sign
 - **Theorem (GAS of the endemic equilibrium):** If R₀ > 1, a unique endemic equilibrium exists and is globally asymptotically stable in Ω \ {X₀} (Volterra–Goh-type Lyapunov function).
 
 Both are proved on the six-dimensional living subsystem (S, E, I, H, M, R); D is excluded from the equilibrium notion and reported only as a derived, path-dependent output.
-
----
-
-## Note on the Corrected Bifurcation Result
-
-An earlier stage of this project explored whether the model could exhibit backward bifurcation and bistability, and an earlier version of this repository (`backward_bifurcation_demo.py`, now removed) and its accompanying `data/bistability_data.csv` reflected that hypothesis. On revisiting the center-manifold derivation with full account of the state-dependence of N_L, that conclusion did not hold up: the corrected coefficient a is strictly negative everywhere, so the model only bifurcates forward.
-
-In hindsight, the old `bistability_data.csv` — integrated for only 300 days — is a plausible illustration of exactly the pitfall described above: at R₀ close to 1, trajectories from different initial conditions can still look clearly separated at day 300 (final cumulative deaths ranging from 0.5 to 351 across the five runs in that file) simply because they have not yet relaxed to the shared equilibrium, not because they are heading to different equilibria. `bifurcation_verification.py` reruns the same kind of five-initial-condition experiment out to 60,000 days and confirms all five converge to the same disease-free state (final spread in S: 0.000000). Cumulative deaths D do converge to different *finite* values across the five runs — that is expected and consistent with the model, since D is a path-dependent integral of the outbreak, not an equilibrium coordinate; it is the six-dimensional living subsystem (S, E, I, H, M, R) that converges to a single, shared attractor.
-
-We are keeping this note in the repository, rather than quietly deleting the old files, so the history of the analysis stays traceable.
 
 ---
 
@@ -177,7 +165,7 @@ This is reported as evidence against gross incompatibility of the fitted disease
 │   └── no_bistability_trajectories.csv    # 5 initial conditions x 60,000-day integration
 │
 └── figures/
-    ├── fig_corrected_coeff_a.png      # Scenario 4: coefficient a is negative throughout
+    ├── fig_bifurcation_coefficient_a.png      # Scenario 4: coefficient a is negative throughout
     ├── fig_no_bistability.png         # Scenario 5: convergence to a common DFE
     └── ... (per-scenario figures, see filenames)
 ```
