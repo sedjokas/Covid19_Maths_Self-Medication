@@ -11,22 +11,25 @@ bifurcation at R0 = 1, and R0 < 1 is both necessary and sufficient for
 elimination. There is no bistability regime.
 
 Near R0 = 1 the relaxation eigenvalue is extremely small
-(~ -2.7e-4 / day, a ~3,700-day relaxation time), so trajectories that have
-not yet reached their unique common equilibrium can look like they are
-converging to two different endpoints when they are not. Scenario 5 below
-therefore integrates for 60,000 days.
+(~ -6.7e-4 / day at the manuscript's Scenario 5 parameter point, a
+~1,480-day relaxation time), so trajectories that have not yet reached
+their unique common equilibrium can look like they are converging to two
+different endpoints when they are not. Scenario 5 below therefore
+integrates for 60,000 days.
 
 This script is an independent numerical check: it reaches the same
 conclusion as the manuscript (a < 0 everywhere; all trajectories converge
 to the disease-free equilibrium) using the model's own closed-form
 equations, but it is not the exact plotting code behind the manuscript's
-Figures 4 and 5. Its output is saved under the verification_* filenames
-below, separate from figures/fig_bifurcation_coefficient_a.png and
-figures/fig_no_bistability.png, which are the manuscript's actual figures.
+Figures 4 and 5 (figures/fig_corrected_coeff_a_v2.png and
+figures/fig_no_bistability_v2.png in the repository root). Its output is
+saved separately under results/figures/verification_* below rather than
+into the top-level figures/ folder, since it is a supplementary check,
+not a manuscript figure.
 
-Outputs:
-  - figures/verification_coefficient_a_scenario4.png   (Scenario 4: center-manifold coefficient a)
-  - figures/verification_no_bistability_scenario5.png      (Scenario 5: long-horizon convergence check)
+Outputs (relative to this script's own directory):
+  - results/figures/verification_coefficient_a_scenario4.png
+  - results/figures/verification_no_bistability_scenario5.png
   - data/verification_coefficient_a.csv
   - data/verification_no_bistability_trajectories.csv
 """
@@ -261,4 +264,4 @@ if __name__ == "__main__":
     scenario5_no_bistability()
 
     print()
-    print("Done. See figures/verification_coefficient_a_scenario4.png and figures/verification_no_bistability_scenario5.png")
+    print(f"Done. See {DEFAULT_FIGDIR}/verification_coefficient_a_scenario4.png and {DEFAULT_FIGDIR}/verification_no_bistability_scenario5.png")
