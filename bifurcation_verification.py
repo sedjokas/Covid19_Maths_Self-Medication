@@ -16,11 +16,19 @@ not yet reached their unique common equilibrium can look like they are
 converging to two different endpoints when they are not. Scenario 5 below
 therefore integrates for 60,000 days.
 
+This script is an independent numerical check: it reaches the same
+conclusion as the manuscript (a < 0 everywhere; all trajectories converge
+to the disease-free equilibrium) using the model's own closed-form
+equations, but it is not the exact plotting code behind the manuscript's
+Figures 4 and 5. Its output is saved under the verification_* filenames
+below, separate from figures/fig_bifurcation_coefficient_a.png and
+figures/fig_no_bistability.png, which are the manuscript's actual figures.
+
 Outputs:
-  - figures/fig_bifurcation_coefficient_a.png   (Scenario 4: center-manifold coefficient a)
-  - figures/fig_no_bistability.png      (Scenario 5: long-horizon convergence check)
-  - data/bifurcation_coefficient_a.csv
-  - data/no_bistability_trajectories.csv
+  - figures/verification_coefficient_a_scenario4.png   (Scenario 4: center-manifold coefficient a)
+  - figures/verification_no_bistability_scenario5.png      (Scenario 5: long-horizon convergence check)
+  - data/verification_coefficient_a.csv
+  - data/verification_no_bistability_trajectories.csv
 """
 
 import numpy as np
@@ -152,10 +160,10 @@ def scenario4_bifurcation_coefficient(outdir_fig='figures', outdir_data='data'):
     ax.legend(fontsize=8)
     ax.grid(True)
     fig.tight_layout()
-    fig.savefig(f"{outdir_fig}/fig_bifurcation_coefficient_a.png", dpi=300)
+    fig.savefig(f"{outdir_fig}/verification_coefficient_a_scenario4.png", dpi=300)
     plt.close(fig)
 
-    with open(f"{outdir_data}/bifurcation_coefficient_a.csv", "w") as f:
+    with open(f"{outdir_data}/verification_coefficient_a.csv", "w") as f:
         f.write("phi_1,epsilon_1_eq_epsilon_2,a\n")
         for phi1, eps, a in rows:
             f.write(f"{phi1},{eps},{a}\n")
@@ -209,13 +217,13 @@ def scenario5_no_bistability(outdir_fig='figures', outdir_data='data'):
         ax.legend(fontsize=8)
         ax.grid(True)
     fig.tight_layout()
-    fig.savefig(f"{outdir_fig}/fig_no_bistability.png", dpi=300)
+    fig.savefig(f"{outdir_fig}/verification_no_bistability_scenario5.png", dpi=300)
     plt.close(fig)
 
     header = ["Time"]
     for name in initial_conditions:
         header += [f"{name}_{v}" for v in ["S", "E", "I", "H", "M", "R", "D"]]
-    with open(f"{outdir_data}/no_bistability_trajectories.csv", "w") as f:
+    with open(f"{outdir_data}/verification_no_bistability_trajectories.csv", "w") as f:
         f.write(",".join(header) + "\n")
         for i, ti in enumerate(t):
             row = [str(ti)]
@@ -245,4 +253,4 @@ if __name__ == "__main__":
     scenario5_no_bistability()
 
     print()
-    print("Done. See figures/fig_bifurcation_coefficient_a.png and figures/fig_no_bistability.png")
+    print("Done. See figures/verification_coefficient_a_scenario4.png and figures/verification_no_bistability_scenario5.png")

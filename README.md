@@ -158,17 +158,23 @@ This is reported as evidence against gross incompatibility of the fitted disease
 ├── export_gamma_panels.py             # Uganda calibration panels & gamma sensitivity
 │
 ├── data/
-│   ├── baseline_simulation_data.csv       # Time series - all 7 compartments, baseline run
-│   ├── endemic_comparison_data.csv        # Baseline vs. endemic equilibrium comparison
-│   ├── summary_table.csv                  # R0 and mortality summary across scenarios
-│   ├── bifurcation_coefficient_a.csv      # Coefficient a across the (phi_1, epsilon) sweep
-│   └── no_bistability_trajectories.csv    # 5 initial conditions x 60,000-day integration
+│   ├── baseline_simulation_data.csv               # Time series - all 7 compartments, baseline run
+│   ├── endemic_comparison_data.csv                # Baseline vs. endemic equilibrium comparison
+│   ├── summary_table.csv                          # R0 and mortality summary across scenarios
+│   ├── verification_coefficient_a.csv             # bifurcation_verification.py output (see below)
+│   └── verification_no_bistability_trajectories.csv
 │
 └── figures/
-    ├── fig_bifurcation_coefficient_a.png      # Scenario 4: coefficient a is negative throughout
-    ├── fig_no_bistability.png         # Scenario 5: convergence to a common DFE
+    ├── fig_bifurcation_coefficient_a.png          # The manuscript's actual Figure (Scenario 4)
+    ├── fig_no_bistability.png                     # The manuscript's actual Figure (Scenario 5)
+    ├── verification_coefficient_a_scenario4.png   # bifurcation_verification.py's own plot of the
+    │                                               #   same quantity (independent check, not a
+    │                                               #   reproduction of the manuscript figure above)
+    ├── verification_no_bistability_scenario5.png  # bifurcation_verification.py's own plot (same caveat)
     └── ... (per-scenario figures, see filenames)
 ```
+
+`fig_bifurcation_coefficient_a.png` and `fig_no_bistability.png` are the manuscript's real figures. `bifurcation_verification.py` is provided so anyone can independently re-derive the same conclusion from the model's equations; its own plots are saved separately under the `verification_*` names above rather than overwriting the manuscript figures, since the two are not pixel-identical (different baseline point within the parameter ranges, different plotting style) even though they agree on the result (coefficient a negative everywhere; all trajectories converge to the disease-free equilibrium).
 
 ---
 
