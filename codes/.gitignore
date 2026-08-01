@@ -1,0 +1,4 @@
+results/figures/
+results/scenario_figures/
+__pycache__/
+*.pyc
