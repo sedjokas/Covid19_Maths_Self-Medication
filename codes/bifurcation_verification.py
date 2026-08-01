@@ -207,7 +207,9 @@ def scenario5_no_bistability(outdir_fig=DEFAULT_FIGDIR, outdir_data=DEFAULT_DATA
         'Large_Outbreak':     [N - 100.0, 50.0, 50.0, 0.0, 0.0, 0.0, 0.0],
     }
 
-    t = np.linspace(0, 60000, 3000)
+    # Log-spaced grid: a linear 0-60,000-day axis compresses the actual
+    # transient (which unfolds over ~1,000 days) into an unreadable sliver.
+    t = np.logspace(-1, np.log10(60000), 3000)
     results = {}
     for name, y0 in initial_conditions.items():
         sol = odeint(seihmrd_rhs, y0, t, args=(p,))
@@ -217,16 +219,17 @@ def scenario5_no_bistability(outdir_fig=DEFAULT_FIGDIR, outdir_data=DEFAULT_DATA
     for name, sol in results.items():
         axes[0].plot(t, sol[:, 0], label=name.replace('_', ' '))
         axes[1].plot(t, sol[:, 6], label=name.replace('_', ' '))
-    axes[0].set_xlabel("Time (days)")
+    axes[0].set_xlabel("Time (days, log scale)")
     axes[0].set_ylabel("Susceptible $S$")
     axes[0].set_title("All trajectories converge to the same DFE")
-    axes[1].set_xlabel("Time (days)")
+    axes[1].set_xlabel("Time (days, log scale)")
     axes[1].set_ylabel("Cumulative deaths $D$")
     axes[1].set_title(f"D converges to a finite, path-dependent limit\n"
                        f"(larger seed outbreak, more deaths before die-out; R0={R0:.3f})")
     for ax in axes:
+        ax.set_xscale('log')
         ax.legend(fontsize=8)
-        ax.grid(True)
+        ax.grid(True, which='both', alpha=0.3)
     fig.tight_layout()
     fig.savefig(f"{outdir_fig}/verification_no_bistability_scenario5.png", dpi=300)
     plt.close(fig)

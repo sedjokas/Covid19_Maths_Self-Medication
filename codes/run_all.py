@@ -94,7 +94,9 @@ report("SCENARIO 5: No-bistability demonstration")
 alpha_near1 = alpha_for_R0(BASELINE, 0.988)
 p5 = dict(BASELINE, alpha=alpha_near1)
 print(f"alpha for R0~0.988: {alpha_near1:.6f}  R0={R0(p5):.4f}")
-tlong = np.linspace(0, 60000, 3000)
+# Log-spaced time grid: a linear 0-60,000-day axis compresses the actual
+# transient (which unfolds over ~1,000 days) into an unreadable sliver.
+tlong = np.logspace(-1, np.log10(60000), 3000)
 ics = {
     'Minuscule': [999.9,0.05,0.05,0,0,0,0],
     'Tiny':      [999.0,0.5,0.5,0,0,0,0],
@@ -108,8 +110,10 @@ for name,y0i in ics.items():
     sol = simulate(p5, tlong, y0i)
     ax.plot(tlong, sol[:,0], label=name)
     finalS.append(sol[-1,0])
-ax.legend(fontsize=8); ax.set_xlabel('Time (days)'); ax.set_ylabel('Susceptible S')
+ax.set_xscale('log')
+ax.legend(fontsize=8); ax.set_xlabel('Time (days, log scale)'); ax.set_ylabel('Susceptible S')
 ax.set_title(f'All trajectories converge to the same DFE (R0={R0(p5):.3f})')
+ax.grid(True, which='both', alpha=0.3)
 fig.tight_layout(); fig.savefig(f"{OUT}/scenario5_no_bistability.png", dpi=200); plt.close(fig)
 print(f"spread in final S at t=60000: {max(finalS)-min(finalS):.6f}")
 
