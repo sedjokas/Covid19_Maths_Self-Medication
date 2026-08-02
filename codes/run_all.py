@@ -27,9 +27,9 @@ print(f"peak M={M.max():.2f}/1000 ({M[pk]/N_L[pk]*100:.1f}%), peak H at same day
 print(f"cumulative deaths day150={D[-1]:.2f}/1000")
 fig, axes = plt.subplots(1,2, figsize=(11,4.5))
 for name,arr in [('S',S),('E',E),('I',I),('H',H),('M',M),('R',R)]:
-    axes[0].plot(t, arr, label=name)
+    axes[0].plot(t, arr, label=name, lw=2.2)
 axes[0].legend(fontsize=8); axes[0].set_xlabel('Time (days)'); axes[0].set_ylabel('Population per 1,000'); axes[0].set_title(f'Baseline dynamics, R0={R0(BASELINE):.2f}')
-axes[1].plot(t, D, color='black'); axes[1].set_xlabel('Time (days)'); axes[1].set_ylabel('Cumulative deaths per 1,000'); axes[1].set_title('Cumulative mortality')
+axes[1].plot(t, D, color='black', lw=2.2); axes[1].set_xlabel('Time (days)'); axes[1].set_ylabel('Cumulative deaths per 1,000'); axes[1].set_title('Cumulative mortality')
 fig.tight_layout(); fig.savefig(f"{OUT}/scenario1_baseline.png", dpi=200); plt.close(fig)
 
 # ---------- Scenario 2: Care-seeking (vary gamma) ----------
@@ -59,11 +59,11 @@ for a in alphas:
     S,E,I,H,M,R,D = sol.T
     peak_I.append(I.max()); deaths150.append(D[-1])
     print(f"alpha={a:.5f} R0={R0(p):.3f} peakI={I.max():.3f} deaths150={D[-1]:.2f}")
-axes[0].plot([R0(dict(BASELINE,alpha=a)) for a in alphas], peak_I, 'o-')
-axes[0].axvline(1, color='red', ls='--', lw=1)
+axes[0].plot([R0(dict(BASELINE,alpha=a)) for a in alphas], peak_I, 'o-', lw=2.2, ms=7)
+axes[0].axvline(1, color='red', ls='--', lw=1.5)
 axes[0].set_xlabel('R0'); axes[0].set_ylabel('Peak infected I per 1,000'); axes[0].set_title('Peak I vs R0')
-axes[1].plot([R0(dict(BASELINE,alpha=a)) for a in alphas], deaths150, 'o-', color='darkred')
-axes[1].axvline(1, color='red', ls='--', lw=1)
+axes[1].plot([R0(dict(BASELINE,alpha=a)) for a in alphas], deaths150, 'o-', color='darkred', lw=2.2, ms=7)
+axes[1].axvline(1, color='red', ls='--', lw=1.5)
 axes[1].set_xlabel('R0'); axes[1].set_ylabel('Cumulative deaths, day 150 per 1,000'); axes[1].set_title('Mortality vs R0')
 fig.tight_layout(); fig.savefig(f"{OUT}/scenario3_contact_sweep.png", dpi=200); plt.close(fig)
 print(f"lowest alpha deaths={deaths150[0]:.3f} highest alpha deaths={deaths150[-1]:.3f} ratio={deaths150[-1]/deaths150[0]:.2f}")
