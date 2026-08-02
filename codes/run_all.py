@@ -25,12 +25,38 @@ pk = np.argmax(M)
 print(f"R0={R0(BASELINE):.4f}")
 print(f"peak M={M.max():.2f}/1000 ({M[pk]/N_L[pk]*100:.1f}%), peak H at same day={H[pk]:.2f}/1000 ({H[pk]/N_L[pk]*100:.1f}%), ratio={M[pk]/H[pk]:.2f}:1")
 print(f"cumulative deaths day150={D[-1]:.2f}/1000")
-fig, axes = plt.subplots(1,2, figsize=(11,4.5))
-for name,arr in [('S',S),('E',E),('I',I),('H',H),('M',M),('R',R)]:
-    axes[0].plot(t, arr, label=name, lw=2.2)
-axes[0].legend(fontsize=8); axes[0].set_xlabel('Time (days)'); axes[0].set_ylabel('Population per 1,000'); axes[0].set_title(f'Baseline dynamics, R0={R0(BASELINE):.2f}')
-axes[1].plot(t, D, color='black', lw=2.2); axes[1].set_xlabel('Time (days)'); axes[1].set_ylabel('Cumulative deaths per 1,000'); axes[1].set_title('Cumulative mortality')
-fig.tight_layout(); fig.savefig(f"{OUT}/scenario1_baseline.png", dpi=200); plt.close(fig)
+# S sits on a completely different scale (447-995) from E,I,H,M,R,D (all
+# under 5), so a single combined panel buries every other compartment near
+# zero. Split into a 2x2 grid, grouping compartments of comparable magnitude.
+fig, axes = plt.subplots(2, 2, figsize=(10, 8))
+
+axes[0,0].plot(t, S, 'b-', lw=2.4)
+axes[0,0].set_xlabel('Time (days)'); axes[0,0].set_ylabel('S per 1,000')
+axes[0,0].set_title('Susceptible')
+
+axes[0,1].plot(t, E, color='orange', lw=2.4, label='E')
+axes[0,1].plot(t, I, 'g-', lw=2.4, label='I')
+axes[0,1].set_xlabel('Time (days)'); axes[0,1].set_ylabel('per 1,000')
+axes[0,1].set_title('Exposed & Infectious'); axes[0,1].legend(fontsize=9)
+
+axes[1,0].plot(t, H, color='purple', lw=2.4, label='H (hospitalized)')
+axes[1,0].plot(t, M, color='brown', lw=2.4, label='M (home care)')
+axes[1,0].set_xlabel('Time (days)'); axes[1,0].set_ylabel('per 1,000')
+axes[1,0].set_title('Hospitalized & Home care'); axes[1,0].legend(fontsize=9)
+
+axes[1,1].plot(t, R, color='teal', lw=2.4, label='R')
+axes[1,1].set_xlabel('Time (days)'); axes[1,1].set_ylabel('R per 1,000', color='teal')
+ax_d = axes[1,1].twinx()
+ax_d.plot(t, D, 'k--', lw=2.4, label='D (cumulative deaths)')
+ax_d.set_ylabel('Cumulative deaths per 1,000')
+axes[1,1].set_title('Recovered & Deaths')
+l1, lb1 = axes[1,1].get_legend_handles_labels()
+l2, lb2 = ax_d.get_legend_handles_labels()
+axes[1,1].legend(l1+l2, lb1+lb2, fontsize=8, loc='upper left')
+
+fig.suptitle(f'Baseline dynamics, R0={R0(BASELINE):.2f}', y=1.0)
+fig.tight_layout()
+fig.savefig(f"{OUT}/scenario1_baseline.png", dpi=200); plt.close(fig)
 
 # ---------- Scenario 2: Care-seeking (vary gamma) ----------
 report("SCENARIO 2: Care-seeking (gamma)")
