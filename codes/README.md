@@ -8,19 +8,22 @@ Python scripts and data used to produce the model results, calibration, and figu
 codes/
   model.py                 SEIHM-R-D model: ODE right-hand side, R0, center-manifold coefficient a
   run_all.py                Section 4 scenarios (1-10), baseline parameter set
+  fig_corrected_a.py         Manuscript Figure 2 (center-manifold coefficient a sweep)
+  bifurcation_verification.py Independent check of Scenarios 4 & 5 (Section 3 Proposition)
   calibrate_uganda.py        Uganda Delta-wave calibration (differential evolution)
   finalize_uganda.py         Goodness-of-fit stats, 95% CI ensemble, gamma sensitivity, Section 5 figures
   transfer_countries.py      Cross-country parameter transfer (Mozambique, Senegal, Cameroon)
   data/
     uganda_calib_data.csv      Cleaned Uganda daily-case / cumulative-death series used for calibration
     transfer_data.json         Cleaned per-country cumulative-death series for the transfer exercise
+    verification_*.csv         Output data of bifurcation_verification.py
   results/
     uganda_fit_results.json    Output of calibrate_uganda.py
     uganda_final_results.json  Output of finalize_uganda.py (goodness-of-fit, CIs)
     transfer_results.json      Output of transfer_countries.py
 ```
 
-Run order: `calibrate_uganda.py` -> `finalize_uganda.py` -> `transfer_countries.py`. Each reads the previous script's JSON output from `results/`. `run_all.py` is independent (Section 4 only) and uses `model.py` directly.
+Run order: `calibrate_uganda.py` -> `finalize_uganda.py` -> `transfer_countries.py`. Each reads the previous script's JSON output from `results/`. `run_all.py`, `fig_corrected_a.py`, and `bifurcation_verification.py` are independent (Sections 3-4 only) and use `model.py` directly.
 
 Requires: `numpy`, `scipy`, `matplotlib`, `scikit-learn`.
 

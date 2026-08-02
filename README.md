@@ -195,7 +195,9 @@ cd codes
 # Section 4: baseline scenarios (1-10)
 python run_all.py
 
-# Section 3: independent bifurcation check (Scenarios 4 & 5)
+# Section 3: Figure 2 (center-manifold coefficient a) and an independent
+# check of Scenarios 4 & 5
+python fig_corrected_a.py
 python bifurcation_verification.py
 
 # Section 5: Uganda calibration, then goodness-of-fit/CIs/figures, then cross-country transfer
