@@ -90,16 +90,33 @@ for code, meta in TDATA.items():
     print(f"{name}: alpha={alpha_f:.4f} beta={beta_f:.4f} (1/beta={1/beta_f:.2f}d) kappa={kappa_f:.4f} I0={I0_f:.4f}")
     print(f"  R2={r2:.4f}  MAPE={mape:.2f}%  RMSE={res.fun:.2f} deaths")
 
+    # 95% CI via a parameter-perturbation ensemble (same approach as the
+    # Uganda calibration): perturb the three fitted parameters +/-15%,
+    # re-simulate without re-fitting, and take the 2.5/97.5 percentiles.
+    rng_c = np.random.default_rng(hash(code) % (2**32))
+    N_BAND = 150
+    band = np.zeros((N_BAND, n))
+    for i in range(N_BAND):
+        a_p = alpha_f * rng_c.uniform(0.85, 1.15)
+        b_p = beta_f * rng_c.uniform(0.85, 1.15)
+        k_p = kappa_f * rng_c.uniform(0.85, 1.15)
+        sol_p, _ = simulate([a_p, b_p, k_p, I0_f])
+        band[i] = sol_p[:, 6] * scale * DELTA
+    band_lo = np.percentile(band, 2.5, axis=0)
+    band_hi = np.percentile(band, 97.5, axis=0)
+
     results[code] = {
         'name': name, 'alpha': alpha_f, 'beta': beta_f, 'kappa': kappa_f, 'I0': I0_f, 'E0': E0_f,
         'R2': r2, 'MAPE': mape, 'RMSE_deaths': res.fun, 'population': pop,
         'final_deaths_obs': float(deaths_net[-1]), 'final_deaths_model': float(Dmod_people[-1]),
+        'final_deaths_ci': [float(band_lo[-1]), float(band_hi[-1])],
         'n_days': n,
     }
 
     fig, ax = plt.subplots(figsize=(4.2, 3.6))
-    ax.plot(t, deaths_net, 'k.', ms=3, label='Observed')
-    ax.plot(t, Dmod_people, 'r-', lw=1.6, label='Model (3-param transfer)')
+    ax.fill_between(t, band_lo, band_hi, color='indianred', alpha=0.2, label='95% CI')
+    ax.plot(t, deaths_net, 'k.', ms=6, label='Observed')
+    ax.plot(t, Dmod_people, 'r-', lw=2.2, label='Model (3-param transfer)')
     ax.set_xlabel('Day'); ax.set_ylabel('Cumulative deaths')
     ax.set_title(f'{name} ($R^2$={r2:.3f})')
     ax.legend(fontsize=7)

@@ -12,6 +12,10 @@
     "population": 31178238,
     "final_deaths_obs": 125.0,
     "final_deaths_model": 132.63146954276812,
+    "final_deaths_ci": [
+      89.65705068622874,
+      193.61898867612595
+    ],
     "n_days": 153
   },
   "SEN": {
@@ -27,6 +31,10 @@
     "population": 16743930,
     "final_deaths_obs": 208.0,
     "final_deaths_model": 207.25587415215358,
+    "final_deaths_ci": [
+      187.29410238214018,
+      228.84077573420686
+    ],
     "n_days": 123
   },
   "CMR": {
@@ -42,6 +50,10 @@
     "population": 26545864,
     "final_deaths_obs": 219.0,
     "final_deaths_model": 218.7833659573588,
+    "final_deaths_ci": [
+      193.94650958398583,
+      253.54654427317175
+    ],
     "n_days": 122
   },
   "mean_R2": 0.9890517173114522

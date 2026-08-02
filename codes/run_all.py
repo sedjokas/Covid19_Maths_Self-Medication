@@ -157,15 +157,27 @@ print(f"raising gamma 0.1->0.9 at eta_M=0.5: {mort[0,4]:.2f} -> {mort[-1,4]:.2f}
 report("SCENARIO 8: Community surveillance")
 configs8 = [('No surveillance', 0.8, 0.005), ('Moderate', 0.5, BASELINE['theta_2']), ('Intensive', 0.2, BASELINE['theta_2']*3)]
 res8=[]
+sols8=[]
 for label, em, th2 in configs8:
     p = dict(BASELINE, eta_M=em, theta_2=th2)
     sol = simulate(p, t, y0)
+    sols8.append(sol)
     S,E,I,H,M,R,D = sol.T
     res8.append((label, em, th2, R0(p), D[-1]))
     print(f"{label}: eta_M={em} theta2={th2:.4f} R0={R0(p):.4f} deaths150={D[-1]:.2f}")
 r0_reduction = (res8[0][3]-res8[2][3])/res8[0][3]*100
 deaths_reduction = (res8[0][4]-res8[2][4])/res8[0][4]*100
 print(f"R0 reduction intensive vs none: {r0_reduction:.1f}%  deaths reduction: {deaths_reduction:.1f}%")
+
+fig, axes = plt.subplots(1, 2, figsize=(11, 4.5))
+for (label, em, th2, r0v, dfin), sol in zip(res8, sols8):
+    axes[0].plot(t, sol[:,6], lw=2.4, label=label)
+    axes[1].plot(t, sol[:,4], lw=2.4, label=label)
+axes[0].set_xlabel('Time (days)'); axes[0].set_ylabel('Cumulative deaths per 1,000')
+axes[0].set_title('Mortality by surveillance intensity'); axes[0].legend()
+axes[1].set_xlabel('Time (days)'); axes[1].set_ylabel('Home-care M per 1,000')
+axes[1].set_title('Home-care prevalence by surveillance intensity'); axes[1].legend()
+fig.tight_layout(); fig.savefig(f"{OUT}/scenario8_surveillance.png", dpi=200); plt.close(fig)
 
 # ---------- Scenario 9: Integrated policy ----------
 report("SCENARIO 9: Integrated policy comparison")
@@ -177,14 +189,23 @@ configs9 = [
     ('Integrated', dict(p_base9, gamma=0.6, eta_M=0.2, theta_2=0.08)),
 ]
 res9=[]
+sols9=[]
 for label, p in configs9:
     sol = simulate(p, t, y0)
+    sols9.append(sol)
     D = sol[:,6]
     res9.append((label, R0(p), D[-1]))
     print(f"{label}: R0={R0(p):.4f} deaths150={D[-1]:.3f}")
 base_d = res9[0][2]
 for label, r0v, dv in res9[1:]:
     print(f"  {label}: deaths averted={base_d-dv:.3f} ({(base_d-dv)/base_d*100:.1f}%), R0 reduction={(res9[0][1]-r0v)/res9[0][1]*100:.1f}%")
+
+fig, ax = plt.subplots(figsize=(7, 5.5))
+for (label, r0v, dfin), sol in zip(res9, sols9):
+    ax.plot(t, sol[:,6], lw=2.4, label=label)
+ax.set_xlabel('Time (days)'); ax.set_ylabel('Cumulative deaths per 1,000')
+ax.set_title('Comparison of policy scenarios'); ax.legend()
+fig.tight_layout(); fig.savefig(f"{OUT}/scenario9_policy.png", dpi=200); plt.close(fig)
 
 # ---------- Scenario 10: Convergence to endemic equilibrium (phase plane) ----------
 report("SCENARIO 10: Convergence to endemic equilibrium")
@@ -198,10 +219,10 @@ ics10 = [
 fig, ax = plt.subplots(figsize=(6,5))
 for y0i in ics10:
     sol = simulate(BASELINE, tlong2, y0i)
-    ax.plot(sol[:,0], sol[:,2], alpha=0.7)
-    ax.plot(sol[0,0], sol[0,2], 'o', color='green', ms=4)
+    ax.plot(sol[:,0], sol[:,2], alpha=0.8, lw=2.2)
+    ax.plot(sol[0,0], sol[0,2], 'o', color='green', ms=7)
 sol_eq = simulate(BASELINE, np.linspace(0,3000,2000), y0)
-ax.plot(sol_eq[-1,0], sol_eq[-1,2], '*', color='red', ms=15, label='Endemic equilibrium X*')
+ax.plot(sol_eq[-1,0], sol_eq[-1,2], '*', color='red', ms=18, label='Endemic equilibrium X*')
 ax.set_xlabel('S'); ax.set_ylabel('I'); ax.legend(); ax.set_title(f'Phase plane, R0={R0(BASELINE):.2f}: convergence to X*')
 fig.tight_layout(); fig.savefig(f"{OUT}/scenario10_phase.png", dpi=200); plt.close(fig)
 print(f"Endemic equilibrium (S*,I*): ({sol_eq[-1,0]:.3f}, {sol_eq[-1,2]:.3f})")
